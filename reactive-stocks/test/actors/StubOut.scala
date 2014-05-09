@@ -8,11 +8,11 @@ import com.fasterxml.jackson.databind.JsonNode
  * returns the actual results of the test to check against our expectations.
  */
 class StubOut() extends WebSocket.Out[JsonNode]() {
-  var actual: JsonNode = null
+	var actual: JsonNode = null
 
-  def write(node: JsonNode) {
-    actual = node
-  }
+	def write(node: JsonNode) {
+		actual = node
+	}
 
-  def close() {}
+	def close() {}
 }

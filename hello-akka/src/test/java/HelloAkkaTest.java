@@ -10,47 +10,47 @@ import org.junit.Test;
 
 public class HelloAkkaTest {
 
-    static ActorSystem system;
+	static ActorSystem system;
 
-    @BeforeClass
-    public static void setup() {
-        system = ActorSystem.create();
-    }
+	@BeforeClass
+	public static void setup() {
+		system = ActorSystem.create();
+	}
 
-    @AfterClass
-    public static void teardown() {
-        system.shutdown();
-        system.awaitTermination(Duration.create("10 seconds"));
-    }
+	@AfterClass
+	public static void teardown() {
+		system.shutdown();
+		system.awaitTermination(Duration.create("10 seconds"));
+	}
 
-    @Test
-    public void testSetGreeter() {
-        new JavaTestKit(system) {{
-            final TestActorRef<HelloAkkaJava.Greeter> greeter =
-                TestActorRef.create(system, Props.create(HelloAkkaJava.Greeter.class), "greeter1");
+	@Test
+	public void testSetGreeter() {
+		new JavaTestKit(system) {{
+			final TestActorRef<HelloAkkaJava.Greeter> greeter =
+				TestActorRef.create(system, Props.create(HelloAkkaJava.Greeter.class), "greeter1");
 
-            greeter.tell(new HelloAkkaJava.WhoToGreet("testkit"), getTestActor());
+			greeter.tell(new HelloAkkaJava.WhoToGreet("testkit"), getTestActor());
 
-            Assert.assertEquals("hello, testkit", greeter.underlyingActor().greeting);
-        }};
-    }
+			Assert.assertEquals("hello, testkit", greeter.underlyingActor().greeting);
+		}};
+	}
 
-    @Test
-    public void testGetGreeter() {
-        new JavaTestKit(system) {{
+	@Test
+	public void testGetGreeter() {
+		new JavaTestKit(system) {{
 
-            final ActorRef greeter = system.actorOf(Props.create(HelloAkkaJava.Greeter.class), "greeter2");
+			final ActorRef greeter = system.actorOf(Props.create(HelloAkkaJava.Greeter.class), "greeter2");
 
-            greeter.tell(new HelloAkkaJava.WhoToGreet("testkit"), getTestActor());
-            greeter.tell(new HelloAkkaJava.Greet(), getTestActor());
+			greeter.tell(new HelloAkkaJava.WhoToGreet("testkit"), getTestActor());
+			greeter.tell(new HelloAkkaJava.Greet(), getTestActor());
 
-            final HelloAkkaJava.Greeting greeting = expectMsgClass(HelloAkkaJava.Greeting.class);
+			final HelloAkkaJava.Greeting greeting = expectMsgClass(HelloAkkaJava.Greeting.class);
 
-            new Within(duration("10 seconds")) {
-                protected void run() {
-                    Assert.assertEquals("hello, testkit", greeting.message);
-                }
-            };
-        }};
-    }
+			new Within(duration("10 seconds")) {
+				protected void run() {
+					Assert.assertEquals("hello, testkit", greeting.message);
+				}
+			};
+		}};
+	}
 }

@@ -14,17 +14,17 @@ abstract class TestkitExample extends TestKit(ActorSystem())
 with AfterExample
 with ImplicitSender {
 
-  /**
-   * Runs after the example completes.
-   */
-  def after {
-    // Send a shutdown message to all actors.
-    system.shutdown()
+	/**
+	 * Runs after the example completes.
+	 */
+	def after {
+		// Send a shutdown message to all actors.
+		system.shutdown()
 
-    // Block the current thread until all the actors have received and processed
-    // shutdown messages.  Using this method makes certain that all threads have been
-    // terminated, which is especially important when running large test suites (otherwise
-    // you may find yourself running out of threads unexpectedly)
-    system.awaitTermination()
-  }
+		// Block the current thread until all the actors have received and processed
+		// shutdown messages.	Using this method makes certain that all threads have been
+		// terminated, which is especially important when running large test suites (otherwise
+		// you may find yourself running out of threads unexpectedly)
+		system.awaitTermination()
+	}
 }

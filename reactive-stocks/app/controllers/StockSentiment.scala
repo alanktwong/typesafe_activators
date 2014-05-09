@@ -11,61 +11,61 @@ import play.api.libs.json.JsString
 
 object StockSentiment extends Controller {
 
-  case class Tweet(text: String)
-  
-  implicit val tweetReads = Json.reads[Tweet]
-  
-  def getTextSentiment(text: String): Future[Response] =
-    WS.url(Play.current.configuration.getString("sentiment.url").get) post Map("text" -> Seq(text))
+	case class Tweet(text: String)
+	
+	implicit val tweetReads = Json.reads[Tweet]
+	
+	def getTextSentiment(text: String): Future[Response] =
+		WS.url(Play.current.configuration.getString("sentiment.url").get) post Map("text" -> Seq(text))
 
-  def getAverageSentiment(responses: Seq[Response], label: String): Double = responses.map { response =>
-    (response.json \\ label).head.as[Double]
-  }.sum / responses.length.max(1) // avoid division by zero
+	def getAverageSentiment(responses: Seq[Response], label: String): Double = responses.map { response =>
+		(response.json \\ label).head.as[Double]
+	}.sum / responses.length.max(1) // avoid division by zero
 
-  def loadSentimentFromTweets(json: JsValue): Seq[Future[Response]] =
-    (json \ "statuses").as[Seq[Tweet]] map (tweet => getTextSentiment(tweet.text))
+	def loadSentimentFromTweets(json: JsValue): Seq[Future[Response]] =
+		(json \ "statuses").as[Seq[Tweet]] map (tweet => getTextSentiment(tweet.text))
 
-  def getTweets(symbol:String): Future[Response] = {
-    WS.url(Play.current.configuration.getString("tweet.url").get.format(symbol)).get.withFilter { response =>
-      response.status == OK
-    }
-  }
+	def getTweets(symbol:String): Future[Response] = {
+		WS.url(Play.current.configuration.getString("tweet.url").get.format(symbol)).get.withFilter { response =>
+			response.status == OK
+		}
+	}
 
-  
-  def sentimentJson(sentiments: Seq[Response]) = {
-    val neg = getAverageSentiment(sentiments, "neg")
-    val neutral = getAverageSentiment(sentiments, "neutral")
-    val pos = getAverageSentiment(sentiments, "pos")
-  
-    val response = Json.obj(
-      "probability" -> Json.obj(
-        "neg" -> neg,
-        "neutral" -> neutral,
-        "pos" -> pos
-      )
-    )
-    
-    val classification =
-      if (neutral > 0.5)
-        "neutral"
-      else if (neg > pos)
-        "neg"
-      else
-        "pos"
-  
-    response + ("label" -> JsString(classification))
-  }
-  
-  def get(symbol: String): Action[AnyContent] = Action.async {
-    val futureStockSentiments: Future[SimpleResult] = for {
-      tweets <- getTweets(symbol) // get tweets that contain the stock symbol
-      futureSentiments = loadSentimentFromTweets(tweets.json) // queue web requests each tweets' sentiments
-      sentiments <- Future.sequence(futureSentiments) // when the sentiment responses arrive, set them
-    } yield Ok(sentimentJson(sentiments))
+	
+	def sentimentJson(sentiments: Seq[Response]) = {
+		val neg = getAverageSentiment(sentiments, "neg")
+		val neutral = getAverageSentiment(sentiments, "neutral")
+		val pos = getAverageSentiment(sentiments, "pos")
+	
+		val response = Json.obj(
+			"probability" -> Json.obj(
+				"neg" -> neg,
+				"neutral" -> neutral,
+				"pos" -> pos
+			)
+		)
+		
+		val classification =
+			if (neutral > 0.5)
+				"neutral"
+			else if (neg > pos)
+				"neg"
+			else
+				"pos"
+	
+		response + ("label" -> JsString(classification))
+	}
+	
+	def get(symbol: String): Action[AnyContent] = Action.async {
+		val futureStockSentiments: Future[SimpleResult] = for {
+			tweets <- getTweets(symbol) // get tweets that contain the stock symbol
+			futureSentiments = loadSentimentFromTweets(tweets.json) // queue web requests each tweets' sentiments
+			sentiments <- Future.sequence(futureSentiments) // when the sentiment responses arrive, set them
+		} yield Ok(sentimentJson(sentiments))
 
-    futureStockSentiments.recover {
-      case nsee: NoSuchElementException =>
-        InternalServerError(Json.obj("error" -> JsString("Could not fetch the tweets")))
-    }
-  }
+		futureStockSentiments.recover {
+			case nsee: NoSuchElementException =>
+				InternalServerError(Json.obj("error" -> JsString("Could not fetch the tweets")))
+		}
+	}
 }
