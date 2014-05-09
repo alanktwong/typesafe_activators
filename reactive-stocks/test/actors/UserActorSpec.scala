@@ -8,7 +8,6 @@ import org.specs2.time.NoTimeConversions
 
 import scala.concurrent.duration._
 
-import scala.collection.JavaConverters._
 import play.api.test.WithApplication
 import org.specs2.matcher.JsonMatchers
 
@@ -28,7 +27,7 @@ class UserActorSpec extends TestkitExample with SpecificationLike with JsonMatch
 
 		val symbol = "ABC"
 		val price = 123
-		val history = List[java.lang.Double](0.1, 1.0).asJava
+		val history = List[Double](0.1, 1.0)
 
 		"send a stock when receiving a StockUpdate message" in new WithApplication {
 			val out = new StubOut()
@@ -58,7 +57,7 @@ class UserActorSpec extends TestkitExample with SpecificationLike with JsonMatch
 			// ...and expect it to be a JSON node.
 			out.actual.get("type").asText must beEqualTo("stockhistory")
 			out.actual.get("symbol").asText must beEqualTo(symbol)
-			out.actual.get("history").get(0).asDouble must beEqualTo(history.get(0))
+			out.actual.get("history").get(0).asDouble must beEqualTo(history.head)
 		}
 	}
 
