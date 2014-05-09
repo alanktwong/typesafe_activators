@@ -6,25 +6,25 @@ import org.specs2.mutable.SpecificationLike
 import java.util.UUID
 
 class RegistrationActorSpec extends TestKit(ActorSystem()) with SpecificationLike with CoreActors with Core with ImplicitSender {
-  import RegistrationActor._
+	import RegistrationActor._
 
-  private def mkUser(email: String): User = User(UUID.randomUUID(), "A", "B", email)
+	private def mkUser(email: String): User = User(UUID.randomUUID(), "A", "B", email)
 
-  sequential
+	sequential
 
-  "Registration should" >> {
+	"Registration should" >> {
 
-    "reject invalid email" in {
-      registration ! Register(mkUser(""))
-      expectMsg(Left(NotRegistered))
-      success
-    }
+		"reject invalid email" in {
+			registration ! Register(mkUser(""))
+			expectMsg(Left(NotRegistered))
+			success
+		}
 
-    "accept valid user to be registered" in {
-      registration ! Register(mkUser("jan@eigengo.com"))
-      expectMsg(Right(Registered))
-      success
-    }
-  }
+		"accept valid user to be registered" in {
+			registration ! Register(mkUser("jan@eigengo.com"))
+			expectMsg(Right(Registered))
+			success
+		}
+	}
 
 }

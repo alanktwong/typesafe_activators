@@ -8,7 +8,7 @@ import akka.actor.{Props, ActorSystem}
  */
 trait Core {
 
-  implicit def system: ActorSystem
+	implicit def system: ActorSystem
 
 }
 
@@ -18,15 +18,15 @@ trait Core {
  */
 trait BootedCore extends Core {
 
-  /**
-   * Construct the ActorSystem we will use in our application
-   */
-  implicit lazy val system = ActorSystem("akka-spray")
+	/**
+	 * Construct the ActorSystem we will use in our application
+	 */
+	implicit lazy val system = ActorSystem("akka-spray")
 
-  /**
-   * Ensure that the constructed ActorSystem is shut down when the JVM shuts down
-   */
-  sys.addShutdownHook(system.shutdown())
+	/**
+	 * Ensure that the constructed ActorSystem is shut down when the JVM shuts down
+	 */
+	sys.addShutdownHook(system.shutdown())
 
 }
 
@@ -35,9 +35,9 @@ trait BootedCore extends Core {
  * ``BootedCore`` for running code or ``TestKit`` for unit and integration tests.
  */
 trait CoreActors {
-  this: Core =>
+	this: Core =>
 
-  val registration = system.actorOf(Props[RegistrationActor])
-  val messenger    = system.actorOf(Props[MessengerActor])
+	val registration = system.actorOf(Props[RegistrationActor])
+	val messenger = system.actorOf(Props[MessengerActor])
 
 }

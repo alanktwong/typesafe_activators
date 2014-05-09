@@ -6,21 +6,18 @@ import akka.camel.Consumer
 
 object QuartzExample {
 
-  def main(args: Array[String]): Unit = {
-    val system = ActorSystem("my-quartz-system")
-    system.actorOf(Props[MyQuartzActor])
-  }
+	def main(args: Array[String]): Unit = {
+		val system = ActorSystem("my-quartz-system")
+		system.actorOf(Props[MyQuartzActor])
+	}
 
-  class MyQuartzActor extends Consumer {
+	class MyQuartzActor extends Consumer {
+		def endpointUri = "quartz://example?cron=0/2+*+*+*+*+?"
 
-    def endpointUri = "quartz://example?cron=0/2+*+*+*+*+?"
+		def receive = {
+			case msg => println("==============> received %s " format msg)
+		}
 
-    def receive = {
-
-      case msg => println("==============> received %s " format msg)
-
-    }
-
-  }
+	}
 
 }

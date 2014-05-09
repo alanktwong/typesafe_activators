@@ -7,9 +7,9 @@ import spray.http.HttpResponse
 
 class RegistrationServiceSpec extends Specification with Directives with Specs2RouteTest {
 
-  "The routing infrastructure should support" >> {
-    "the most simple and direct route" in {
-      Get() ~> complete(HttpResponse()) ~> (_.response) === HttpResponse()
-    }
-  }
+	"The routing infrastructure should support" >> {
+		"the most simple and direct route" in {
+			Get() ~> complete(HttpResponse()) ~> (_.response) === HttpResponse()
+		}
+	}
 }

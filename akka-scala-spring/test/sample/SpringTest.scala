@@ -25,36 +25,36 @@ import  CountingActor._
 class SpringTest extends Specification{
 
 
-   "Simple test" should {
+	"Simple test" should {
 
-      "Fire 3 COUNT "    in  {
-        // create a spring context
-        implicit val ctx = FunctionalConfigApplicationContext(classOf[TestAppConfiguration])
+		"Fire 3 COUNT " in {
+			// create a spring context
+			implicit val ctx = FunctionalConfigApplicationContext(classOf[TestAppConfiguration])
 
-        import Config._
-        // get hold of the actor system
-        val system = ctx.getBean(classOf[ActorSystem])
+			import Config._
+			// get hold of the actor system
+			val system = ctx.getBean(classOf[ActorSystem])
 
-        val prop = SpringExtentionImpl(system).props("countingActor")
+			val prop = SpringExtentionImpl(system).props("countingActor")
 
-        // use the Spring Extension to create props for a named actor bean
-        val counter: ActorRef = system.actorOf(prop, "counter")
+			// use the Spring Extension to create props for a named actor bean
+			val counter: ActorRef = system.actorOf(prop, "counter")
 
-        // tell it to count three times
-        counter ! COUNT
-        counter ! COUNT
-        counter ! COUNT
+			// tell it to count three times
+			counter ! COUNT
+			counter ! COUNT
+			counter ! COUNT
 
-        // check the result
-        val result = counter ? GET
-        Await.result(result,  duration) .asInstanceOf[Int] must beEqualTo(3)
-        val  testService = ctx.getBean(classOf[TestCountingService])
-        testService.getNumberOfCalls must beEqualTo(3)
+			// check the result
+			val result = counter ? GET
+			Await.result(result,  duration) .asInstanceOf[Int] must beEqualTo(3)
+			val  testService = ctx.getBean(classOf[TestCountingService])
+			testService.getNumberOfCalls must beEqualTo(3)
 
-        // shut down the actor system
-        system.shutdown();
-        system.awaitTermination();
-      }
-   }
+			// shut down the actor system
+			system.shutdown();
+			system.awaitTermination();
+		}
+	}
 
 }

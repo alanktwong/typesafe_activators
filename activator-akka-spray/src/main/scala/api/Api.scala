@@ -11,14 +11,14 @@ import spray.routing.RouteConcatenation
  * to the top-level actors that make up the system.
  */
 trait Api extends RouteConcatenation {
-  this: CoreActors with Core =>
+	this: CoreActors with Core =>
 
-  private implicit val _ = system.dispatcher
+	private implicit val _ = system.dispatcher
 
-  val routes =
-    new RegistrationService(registration).route ~
-    new MessengerService(messenger).route
+	val routes =
+		new RegistrationService(registration).route ~
+		new MessengerService(messenger).route
 
-  val rootService = system.actorOf(Props(new RoutedHttpService(routes)))
+	val rootService = system.actorOf(Props(new RoutedHttpService(routes)))
 
 }
