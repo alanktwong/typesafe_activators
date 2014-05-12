@@ -1,0 +1,123 @@
+@(error: Option[String])
+
+@layout("Clockwork Semaphore") {
+    <nav id="main-navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
+        </div>
+    </nav>
+
+
+
+
+<div class="row">
+
+    <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="panel">
+
+
+
+        <!-- todo: error display could be much more polished -->
+        @for(e <- error) {
+            <div class="alert alert-danger">
+                @error
+            </div>
+        }
+
+
+
+
+            <h3>Register</h3>
+        <form class="form-horizontal" role="form" action="register" method="post">
+            <div class="form-group">
+                <label for="username_login" class="col-sm-2 control-label">Username</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="username_login" placeholder="Username"  name="username"  pattern="[0-9a-zA-Z]{5,15}"  title="Username must be between 5 and 15 alphanumeric characters"  required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password_login" class="col-sm-2 control-label">Password</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" id="password_login" placeholder="Password" name="password" pattern=".{5,15}" title="Password must be between 5 and 15 characters" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-default">Register</button>
+                </div>
+            </div>
+        </form>
+
+        <h3>Sign In</h3>
+        <form class="form-horizontal" role="form" action="login" method="post">
+            <div class="form-group">
+                <label for="username_login" class="col-sm-2 control-label">Username</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="username_login" placeholder="Username"  name="username" pattern="[0-9a-zA-Z]{5,15}" title="Username must be between 5 and 15 alphanumeric characters" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password_login" class="col-sm-2 control-label">Password</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" id="password_login" placeholder="Password"  name="password" pattern=".{5,15}"  title="Password must be between 5 and 15 characters" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-default">Sign in</button>
+                </div>
+            </div>
+        </form>
+        </div>
+
+    </div>
+</div>
+
+        <!--
+<div class="row">
+<div class="col-md-6">
+    <div class="jumbotron">
+    login
+    <form action="login" method="post" role="form">
+        <div class="form-group">
+            <label>Username</label>
+            <input class="form-control" type="text" name="username"><br>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input class="form-control" type="password" name="password">
+        </div>
+        <input type="submit" value="Submit">
+    </form>
+
+
+    Register
+    <form action="register" method="post" role="form">
+        <div class="form-group">
+            <label>Username</label>
+            <input class="form-control" type="text" name="username"><br>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input class="form-control" type="password" name="password">
+        </div>
+        <input type="submit" value="Submit">
+    </form>
+    </div>
+
+</div>
+</div>
+        -->
+
+   <script>
+        //dynamic navbar offset
+        $(window).resize(function () {
+           $('body').css('padding-top', parseInt($('#main-navbar').css("height"))+10);
+        });
+
+        $(window).load(function () {
+           $('body').css('padding-top', parseInt($('#main-navbar').css("height"))+10);
+        });
+   </script>
+
+}

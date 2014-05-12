@@ -1,0 +1,49 @@
+@(user_id: String, username: String)
+
+@layout("Clockwork Semaphore") {
+<div class="container" ng-controller="AppCtrl" ng-app="app"
+ng-init="init('@user_id', '@username')">
+
+    <nav id="main-navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <a class="navbar-brand">{{users[current_user].username}}</a>
+
+        <ul class="nav navbar-nav">
+            <li><a href="#" ng-click="feed = 'my_feed';fetch_my_feed(0)">My Feed</a></li>
+            <li><a href="#" ng-click="feed = 'global_feed'; fetch_global_feed(0)">Global Feed</a></li>
+            <li><a href="logout"><i class="fa fa-power-off fa-6"></i></a></li>
+        </ul>
+    </nav>
+
+
+<div class="row">
+
+<div class="col-lg-6 col-md-6 col-sm-6" id="tweet_column">
+    <form class="form-inline" ng-submit="send()" require>
+        <textarea ng-model="text" class="form-control" placeholder="> input message" class="message" id="tweeter"></textarea >
+        <br>
+        <input type="submit" class="form-control"/>
+    </form>
+
+    <br>
+
+<div class="panel panel-tweet" ng-repeat="message in get_messages(feed) | orderBy:'-timestamp'">
+    <h4>
+        {{ users[message.user_id].username }}
+        <span ng-show="message.user_id != current_user">
+        <button class="btn btn-primary" ng-show="users[message.user_id].isFollowing" ng-click="unfollow_user(message.user_id)">Unfollow</button>
+        <button class="btn btn-default" ng-show="!users[message.user_id].isFollowing" ng-click="follow_user(message.user_id)">Follow</button>
+        </span>
+    </h4>
+    <div class="panel-body">
+        {{ message.body }}
+    </div>
+    <button ng-show="$last" class="btn btn-default" ng-click="feed_page[feed] = feed_page[feed] + 1; fetch_feed(feed, feed_page[feed])">Load more posts</button>
+</div>
+</div>
+
+</div>
+
+
+</div>
+<script src="@routes.Assets.at("javascripts/main.js")" type="text/javascript"></script>
+}
