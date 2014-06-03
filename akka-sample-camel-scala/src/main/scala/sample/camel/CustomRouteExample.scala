@@ -27,7 +27,9 @@ object CustomRouteExample {
 
 		def receive = {
 			// Forward a string representation of the message body to transformer
-			case msg: CamelMessage => transformer.forward(msg.withBodyAs[String])
+			case msg: CamelMessage => {
+				transformer.forward(msg.withBodyAs[String])
+			}
 		}
 	}
 
@@ -35,8 +37,9 @@ object CustomRouteExample {
 		def receive = {
 			// example: transform message body "foo" to "- foo -" and forward result
 			// to producer
-			case msg: CamelMessage =>
+			case msg: CamelMessage => {
 				producer.forward(msg.mapBody((body: String) => "- %s -" format body))
+			}
 		}
 	}
 
